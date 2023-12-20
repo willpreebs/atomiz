@@ -2,6 +2,8 @@ import express, { Router } from 'express';
 import { UrlRoutes, RedirectRoutes } from './url/routes.js';
 import 'dotenv/config';
 import mongoose from 'mongoose';
+import cors from 'cors';
+
 
 const app = express();
 app.use(express.json());
@@ -21,6 +23,7 @@ const redirectRouter = Router();
 UrlRoutes(urlRouter);
 RedirectRoutes(redirectRouter);
 
+app.use(cors());
 app.use("/url", urlRouter);
 app.use("/", redirectRouter);
 

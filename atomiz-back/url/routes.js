@@ -20,6 +20,11 @@ function UrlRoutes(app) {
         return code;
     }
 
+    const url_validator = (url) => {
+        var REGEX = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
+        return REGEX.test(url);
+    }
+
     const addNewUrl = async (req, res) => {
 
         console.log(req.body);
@@ -29,6 +34,11 @@ function UrlRoutes(app) {
             return;
         }
         const url = req.body.url;
+
+        if (!url_validator(url)) {
+            res.status(400).json({message: 'invalid URL'});
+            return;
+        }
 
         const existingRedirect = await dao.getRedirectByUrl(url);
         if (existingRedirect) {
