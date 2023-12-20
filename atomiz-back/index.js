@@ -12,7 +12,7 @@ const MONGO_DB = process.env.MONGO_DB;
 
 const DB = `mongodb+srv://${USERNAME}:${PASSWORD}@atomizcluster.iojo68f.mongodb.net/${MONGO_DB}?retryWrites=true&w=majority`;
 // const DB = `mongodb+srv://${USERNAME}:${PASSWORD}@atomizcluster.iojo68f.mongodb.net/?retryWrites=true&w=majority`;
-// console.log(DB);
+console.log(DB);
 mongoose.connect(DB);
 
 const urlRouter = Router();

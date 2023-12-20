@@ -1,7 +1,24 @@
-import generateUrlId from "../code_generator/index.js";
+import CodeGenerator from "../code_generator/index.js";
 import * as dao from "./dao.js";
 
 function UrlRoutes(app) {
+
+    const generator = new CodeGenerator(6);
+
+    const getUniqueCode = async () => {
+        const code = generator.generateCode();
+        let i = 0;
+        while (await dao.getRedirect(code)) {
+            console.log('code duplicated');
+            code = generator.generateCode();
+            i++;
+            if (i == 5) {
+                console.error("Couldn't find a unique code in 5 attempts");
+                throw new Error("Running out of codes for this length");
+            }
+        }
+        return code;
+    }
 
     const addNewUrl = async (req, res) => {
 
@@ -13,7 +30,14 @@ function UrlRoutes(app) {
         }
         const url = req.body.url;
 
-        const code = generateUrlId(url);
+        const existingRedirect = await dao.getRedirectByUrl(url);
+        if (existingRedirect) {
+            res.send(existingRedirect);
+            return;
+        }
+
+        const code = await getUniqueCode();
+
         const ret = await dao.createRedirect(code, url);
         res.send(ret);
     };
@@ -38,8 +62,8 @@ function RedirectRoutes(app) {
 
     }
 
-    const getAllRedirects = (req, res) => {
-        res.send(dao.getAllRedirects());
+    const getAllRedirects = async (req, res) => {
+        res.send(await dao.findAllRedirects());
     }
 
     app.get("/", (req, res) => {

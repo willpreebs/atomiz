@@ -1,11 +1,13 @@
 import ShortUniqueId from "short-unique-id";
 
+export default class CodeGenerator {
 
-export default function generateUrlId(url) {
+    constructor(length) {
+        this.options = { length };
+        this.uid = new ShortUniqueId(this.options);
+    }
 
-    const options = {length: 6};
-
-    const uid = new ShortUniqueId(options);
-
-    return uid.rnd();
+    generateCode() {
+        return this.uid.rnd();
+    }
 }
